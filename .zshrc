@@ -1,6 +1,7 @@
 export ZSH="/home/micalm/.oh-my-zsh"
 ZSH_THEME="bureau"
-plugins=(sudo systemd debian git docker docker-compose wakeonlan zbell)
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+plugins=(sudo systemd debian git docker docker-compose wakeonlan zbell zsh-autosuggestions)
 zbell_use_notify_send=true
 zbell_ignore=(vim ssh tail)
 
