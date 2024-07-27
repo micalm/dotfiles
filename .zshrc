@@ -7,28 +7,31 @@ zbell_ignore=(vim ssh tail)
 
 source $ZSH/oh-my-zsh.sh
 
+# PHP/Laravel shortcuts
 alias art="php artisan"
-alias art71="php7.1 artisan"
-alias art72="php7.2 artisan"
-alias art73="php7.3 artisan"
-alias art74="php7.4 artisan"
-alias art80="php8.0 artisan"
-alias art81="php8.1 artisan"
+alias art7="php7.4 artisan"
+alias art8="php8.3 artisan"
 alias co="composer"
-alias co71="php7.1 /usr/local/bin/composer"
-alias co72="php7.2 /usr/local/bin/composer"
-alias co73="php7.3 /usr/local/bin/composer"
-alias co74="php7.4 /usr/local/bin/composer"
-alias co80="php8.0 /usr/local/bin/composer"
-alias co81="php8.1 /usr/local/bin/composer"
+alias co7="php7.4 /usr/local/bin/composer"
+alias co8="php8.3 /usr/local/bin/composer"
 alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 
-alias flush-dns="sudo systemd-resolve --flush-caches"
+# Remember if you alias a command you can always call the original with `\cat`
+# https://github.com/sharkdp/bat
+alias cat="batcat"
+# https://github.com/ogham/exa
+alias l="exa --long --all --group --time-style long-iso"
+# ./local/bin/hhost
+alias host="hhost"
 
-mp4towebm() {
-    ffmpeg -i $1 $1.webm
-}
+# Misc
+alias flush-dns="sudo systemd-resolve --flush-caches"
 
 # Set up console env
 export EDITOR=vim
 export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony/bin:$PATH"
+
+# https://github.com/nvm-sh/nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

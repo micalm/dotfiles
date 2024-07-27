@@ -1,9 +1,3 @@
-" Sane .vimrc defaults
-" Author: Mateusz Micał <mateusz@mical.pl>
-"
-" CC-BY-SA 3.0
-"
-
 " Use UTF-8 by default
 set encoding=utf8
 

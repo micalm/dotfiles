@@ -1,0 +1,26 @@
+#!/bin/bash
+##########################################
+# Does a quick domain->ip->revdns lookup #
+##########################################
+
+if [ -z "$1" ]; then
+    echo "Usage: hhost <domain>"
+    exit 1
+fi
+
+DOMAIN="$1"
+
+IP=$(host $DOMAIN | awk '/has address/ { print $4 }')
+
+if [ -z "$IP" ]; then
+    echo "No IP address found for $DOMAIN"
+    exit 1
+fi
+
+HOSTNAME=$(host $IP | awk '/domain name pointer/ { print $5 }' | sed 's/\.$//')
+
+if [ -z "$HOSTNAME" ]; then
+    echo "$DOMAIN => $IP"
+else
+    echo "$DOMAIN => $IP => $HOSTNAME"
+fi
