@@ -19,8 +19,8 @@ alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 # Remember if you alias a command you can always call the original with `\cat`
 # https://github.com/sharkdp/bat
 alias cat="batcat"
-# https://github.com/ogham/exa
-alias l="exa --long --all --group --time-style long-iso"
+# https://github.com/eza-community/eza
+alias l="eza --long --all --group --time-style long-iso"
 # ./local/bin/hhost
 alias host="hhost"
 
