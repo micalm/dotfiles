@@ -1,7 +1,22 @@
-export ZSH="/home/micalm/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="bureau"
+
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-plugins=(sudo systemd debian git docker docker-compose wakeonlan zbell zsh-autosuggestions)
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+plugins=(
+  debian
+  docker
+  docker-compose
+  git
+  sudo
+  systemd
+  wakeonlan
+  zbell
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
 zbell_use_notify_send=true
 zbell_ignore=(vim ssh tail)
 
@@ -20,12 +35,9 @@ alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 # https://github.com/sharkdp/bat
 alias cat="batcat"
 # https://github.com/eza-community/eza
-alias l="eza --long --all --group --time-style long-iso"
-# ./local/bin/hhost
+alias l="eza --long --all --group --time-style=long-iso"
+# ~/.local/bin/hhost
 alias host="hhost"
-
-# Misc
-alias flush-dns="sudo systemd-resolve --flush-caches"
 
 # Set up console env
 export EDITOR=vim
