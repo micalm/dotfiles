@@ -4,6 +4,24 @@ Welcome to my personal repository of commonly used \*nix environment configurati
 
 Feel free to share and modify them. If you base your work on these files, a mention would be highly appreciated.
 
+## Requirements
+
+- **Binaries**
+  - `fzf` - [command-line fuzzy finder](https://github.com/junegunn/fzf) (via `apt`)
+  - `rg` - [ripgrep](https://github.com/BurntSushi/ripgrep) (via `apt`)
+  - `bat` - [A cat(1) clone with syntax highlighting](https://github.com/sharkdp/bat) (via `apt`)
+  - `eza` - [A modern replacement for ls](https://github.com/eza-community/eza) (via `apt`)
+    - Note `exa` was used before, but it has since [been abandoned](https://github.com/ogham/exa/blob/master/README.md)
+  - `broot` - [A better way to navigate directories](https://github.com/Canop/broot) (manual)
+    - Requires initial install before first use - just launch `broot`
+
+## Installation
+
+- clone the repo to your desired directory (`$HOME/dotfiles` by default)
+- make sure you know what the installer does
+- launch the installer `./.local/bin/update-dotfiles`
+- done!
+
 ## Contents
 
 ### .zshrc
@@ -13,7 +31,7 @@ A set of helpers for ohmyz.sh-based zsh configurations. Some web development hel
 - **Theme**: [bureau](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes#bureau) - supports git and nvm.
 - **Aliases**:
   - `cat` aliased to [bat](https://github.com/sharkdp/bat)
-  - `l(s)` aliased to [exa](https://github.com/ogham/exa)
+  - `l(s)` aliased to [exa](https://github.com/eza-community/eza)
   - `host` wrapper for quick domain-to-IP and reverse DNS lookups
   - `flush-dns` alias for systemd
   - `vim` set as the default editor
@@ -46,6 +64,14 @@ A basic setup to maintain user sanity:
 - Default commit message with hints on [Conventional Commits](https://www.conventionalcommits.org/)
 - `git plog` alias for a formatted `git log`
 - A sane default configuration (Remember to change the user settings if using this!)
+
+### hhost
+
+A simple wrapper on `host` for quick `domain => ip => revdns` lookups.
+```
+$ host google.com
+google.com => 142.250.203.206 => waw02s22-in-f14.1e100.net
+```
 
 ## Unlicense
 

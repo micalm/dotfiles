@@ -1,0 +1,169 @@
+#!/bin/bash
+
+DOTFILES_DIR="$HOME/dotfiles"
+
+packages=(
+    git
+    vim
+    zsh
+    curl
+    fzf
+    ripgrep
+    bat
+    eza
+)
+
+binaries=(
+    "https://dystroy.org/broot/download/x86_64-linux/broot"
+)
+
+# name|path|command
+tools=(
+    "Oh My Zsh|$HOME/.oh-my-zsh|sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
+    "zsh-autosuggestions|$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions|git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    "zsh-syntax-highlighting|$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting|git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+)
+
+###################################################
+### YOU SHOULD NOT NEED TO EDIT BELOW THIS LINE ###
+###################################################
+
+# Update the local dotfiles repository, if it is a git repository.
+#
+# If the local dotfiles repository is a git repository, this function pulls the latest
+# changes from the remote repository. If it is not a git repository, it will print a message
+# indicating that it is not a git repository.
+update_dotfiles_repo() {
+  if [ -d "$DOTFILES_DIR/.git" ]; then
+    echo "Pulling latest changes from the remote repository..."
+    git -C "$DOTFILES_DIR" pull
+  else
+    echo "Directory $DOTFILES_DIR is not a git repository."
+  fi
+}
+
+# Check if a package is installed.
+#
+# $1: The name of the package to check.
+#
+# Returns 0 if the package is installed, 1 otherwise.
+is_installed() {
+    dpkg -s "$1" &>/dev/null
+    return $?
+}
+
+# Install the required packages.
+#
+# This function updates the package lists and then goes through the list of required
+# packages. If a package is not installed, it is installed with `apt`.
+install_packages() {
+    echo "Updating package lists..."
+    sudo apt update
+
+    echo "Installing required packages..."
+    for pkg in "${packages[@]}"; do
+        if is_installed "$pkg"; then
+            echo "$pkg is already installed."
+        else
+            sudo apt install -y "$pkg"
+            echo "$pkg has been installed."
+        fi
+    done
+}
+
+# Link a file from the source to the target, renaming any existing file at the target location to {target}-bak.
+#
+# $1: The source file to link
+# $2: The target location to link to
+link_file() {
+    local source_file="$1"
+    local target_file="$2"
+
+    if [ -e "$target_file" ]; then
+        if [ -L "$target_file" ]; then
+            echo "Removing existing symlink $target_file"
+            rm "$target_file"
+        else
+            echo "Renaming $target_file to ${target_file}-bak"
+            mv "$target_file" "${target_file}-bak"
+        fi
+    fi
+
+    ln -sf "$source_file" "$target_file"
+    echo "Linked $source_file to $target_file"
+}
+
+# Download any binary files specified in the binaries array and make them executable.
+#
+# For each binary, if the file does not already exist, it is downloaded with curl, made
+# executable with chmod, and a message is printed indicating that it has been downloaded.
+# If the file already exists, a message is printed indicating that the binary is already
+# downloaded.
+download_binaries() {
+    mkdir -p "$DOTFILES_DIR/.local/bin"
+
+    for url in "${binaries[@]}"; do
+        binary_name=$(basename "$url")
+        target_file="$DOTFILES_DIR/.local/bin/$binary_name"
+
+        if [ ! -f "$target_file" ]; then
+            echo "Downloading $binary_name..."
+            curl -L -o "$target_file" "$url"
+            chmod +x "$target_file"
+            echo "$binary_name has been downloaded and made executable."
+        else
+            echo "$binary_name is already downloaded."
+        fi
+    done
+}
+
+# Install the required scripts.
+#
+# This function goes through the list of required scripts. If a script is not installed,
+# it is installed with the given command.
+install_scripts() {
+  for tool in "${tools[@]}"; do
+    tool_name=$(echo "$tool" | cut -d '|' -f 1)
+    check_path=$(echo "$tool" | cut -d '|' -f 2)
+    install_command=$(echo "$tool" | cut -d '|' -f 3)
+
+    if [ ! -d "$check_path" ]; then
+      echo "Installing $tool_name..."
+      eval "$install_command"
+    else
+      echo "$tool_name is already installed."
+    fi
+  done
+}
+
+# Link all dotfiles to their respective locations in the home directory.
+#
+# This function goes through each of the root dotfiles, and links them to their
+# respective locations in the home directory.
+#
+# It then goes through each of the configuration directories, and links them to
+# their respective locations in the .config directory.
+#
+# Finally, it goes through each of the binary files, and links them to their
+# respective locations in the .local/bin directory.
+link_files() {
+    echo "Linking root dotfiles..."
+    for file in .gitconfig .gitmessage .screenrc .vimrc .zshrc; do
+        link_file "$DOTFILES_DIR/$file" "$HOME/$file"
+    done
+
+    echo "Linking .local/bin directory..."
+    mkdir -p "$HOME/.local/bin"
+    for bin_file in "$DOTFILES_DIR/.local/bin/"*; do
+        bin_name=$(basename "$bin_file")
+        link_file "$bin_file" "$HOME/.local/bin/$bin_name"
+    done
+}
+
+update_dotfiles_repo
+install_packages
+install_scripts
+download_binaries
+link_files
+
+echo "Dotfiles installation complete!"

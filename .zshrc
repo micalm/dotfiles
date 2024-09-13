@@ -32,9 +32,9 @@ alias co8="php8.3 /usr/local/bin/composer"
 alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 
 # Remember if you alias a command you can always call the original with `\cat`
-# https://github.com/sharkdp/bat
+
+alias tree="broot"
 alias cat="batcat"
-# https://github.com/eza-community/eza
 alias l="eza --long --all --group --time-style=long-iso"
 # ~/.local/bin/hhost
 alias host="hhost"
@@ -47,3 +47,5 @@ export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony/b
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+source $HOME/.config/broot/launcher/bash/br
