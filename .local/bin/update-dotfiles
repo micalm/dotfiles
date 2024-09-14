@@ -2,9 +2,13 @@
 
 DOTFILES_DIR="$HOME/dotfiles"
 
+ppas=(
+    neovim-ppa/unstable
+)
+
 packages=(
     git
-    vim
+    neovim
     zsh
     curl
     fzf
@@ -22,11 +26,27 @@ tools=(
     "Oh My Zsh|$HOME/.oh-my-zsh|sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
     "zsh-autosuggestions|$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions|git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     "zsh-syntax-highlighting|$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting|git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    "Node Version Manager|$HOME/.nvm|bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)\""
+    "NvChad for NeoVim|$HOME/.config/nvim|git clone https://github.com/NvChad/starter ~/.config/nvim"
+)
+
+# name|command
+scripts=(
+    "Add GNOME Terminal GitHub-Dark-Dimmed Theme|bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/edurojasr/Gnome-Terminal-GitHub-Theme/main/github-dark-dimmed.sh)\""
+    "Use latest Node LTS|source $HOME/.nvm/nvm.sh && nvm install --lts"
+    "Set NeoVim as default editor|sudo update-alternatives --set vim /usr/bin/nvim"
 )
 
 ###################################################
 ### YOU SHOULD NOT NEED TO EDIT BELOW THIS LINE ###
 ###################################################
+
+BOLD="\033[1m"
+TXT_GRN="\033[92m"
+TXT_RED="\033[91m"
+BG_GRN="\033[42m"
+BG_RED="\033[41m"
+RESET="\033[0m"
 
 # Update the local dotfiles repository, if it is a git repository.
 #
@@ -38,7 +58,7 @@ update_dotfiles_repo() {
     echo "Pulling latest changes from the remote repository..."
     git -C "$DOTFILES_DIR" pull
   else
-    echo "Directory $DOTFILES_DIR is not a git repository."
+    echo -e "${TXT_RED}Directory $DOTFILES_DIR is not a git repository.${RESET}"
   fi
 }
 
@@ -52,21 +72,28 @@ is_installed() {
     return $?
 }
 
+add_ppas() {
+    for ppa in "${ppas[@]}"; do
+        sudo add-apt-repository -y "ppa:$ppa"
+        echo "PPA $ppa has been added."
+    done
+}
+
 # Install the required packages.
 #
 # This function updates the package lists and then goes through the list of required
 # packages. If a package is not installed, it is installed with `apt`.
 install_packages() {
     echo "Updating package lists..."
-    sudo apt update
+    sudo apt-get update
 
     echo "Installing required packages..."
     for pkg in "${packages[@]}"; do
         if is_installed "$pkg"; then
-            echo "$pkg is already installed."
+            echo -e "${TXT_RED}$pkg is already installed.${RESET}"
         else
-            sudo apt install -y "$pkg"
-            echo "$pkg has been installed."
+            sudo apt-get install -y "$pkg"
+            echo -e "${TXT_GRN}$pkg has been installed.${RESET}"
         fi
     done
 }
@@ -81,16 +108,16 @@ link_file() {
 
     if [ -e "$target_file" ]; then
         if [ -L "$target_file" ]; then
-            echo "Removing existing symlink $target_file"
+            echo -e "${TXT_RED}Removing existing symlink $target_file${RESET}"
             rm "$target_file"
         else
-            echo "Renaming $target_file to ${target_file}-bak"
+            echo -e "${TXT_RED}Renaming $target_file to ${target_file}-bak${RESET}"
             mv "$target_file" "${target_file}-bak"
         fi
     fi
 
     ln -sf "$source_file" "$target_file"
-    echo "Linked $source_file to $target_file"
+    echo -e "${TXT_GRN}Linked $source_file to $target_file${RESET}"
 }
 
 # Download any binary files specified in the binaries array and make them executable.
@@ -110,11 +137,31 @@ download_binaries() {
             echo "Downloading $binary_name..."
             curl -L -o "$target_file" "$url"
             chmod +x "$target_file"
-            echo "$binary_name has been downloaded and made executable."
+            echo -e "${TXT_GRN}$binary_name has been downloaded and made executable.${RESET}"
         else
-            echo "$binary_name is already downloaded."
+            echo -e "${TXT_RED}$binary_name is already downloaded.${RESET}"
         fi
     done
+}
+
+
+# Install the required tools.
+#
+# This function goes through the list of required tools. If a tool is not installed,
+# it is installed with the given command.
+install_tools() {
+  for tool in "${tools[@]}"; do
+    tool_name=$(echo "$tool" | cut -d '|' -f 1)
+    check_path=$(echo "$tool" | cut -d '|' -f 2)
+    install_command=$(echo "$tool" | cut -d '|' -f 3)
+
+    if [ ! -d "$check_path" ]; then
+      echo -e "${TXT_GRN}Installing $tool_name...${RESET}"
+      eval "$install_command"
+    else
+      echo -e "${TXT_RED}$tool_name is already installed.${RESET}"
+    fi
+  done
 }
 
 # Install the required scripts.
@@ -122,17 +169,12 @@ download_binaries() {
 # This function goes through the list of required scripts. If a script is not installed,
 # it is installed with the given command.
 install_scripts() {
-  for tool in "${tools[@]}"; do
-    tool_name=$(echo "$tool" | cut -d '|' -f 1)
-    check_path=$(echo "$tool" | cut -d '|' -f 2)
-    install_command=$(echo "$tool" | cut -d '|' -f 3)
+  for script in "${scripts[@]}"; do
+    script_name=$(echo "$script" | cut -d '|' -f 1)
+    install_command=$(echo "$script" | cut -d '|' -f 2)
 
-    if [ ! -d "$check_path" ]; then
-      echo "Installing $tool_name..."
-      eval "$install_command"
-    else
-      echo "$tool_name is already installed."
-    fi
+    echo -e "${TXT_GRN}Running $script_name...${RESET}"
+    eval "$install_command"
   done
 }
 
@@ -161,9 +203,16 @@ link_files() {
 }
 
 update_dotfiles_repo
+add_ppas
 install_packages
-install_scripts
+install_tools
 download_binaries
+install_scripts
 link_files
 
-echo "Dotfiles installation complete!"
+echo
+echo
+echo -e "${BG_GRN}${BOLD}Dotfiles installation complete!${RESET}"
+echo "To finish installation:"
+echo -e "Run nvim. Run ${BOLD}MasonInstallAll${RESET} command after lazy.nvim finishes downloading plugins."
+echo -e "Run broot to install ${BOLD}br${RESET}."
