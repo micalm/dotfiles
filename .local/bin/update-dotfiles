@@ -6,6 +6,11 @@ ppas=(
     neovim-ppa/unstable
 )
 
+# name|check|utility
+utilities=(
+    "Add eza repository|.add-eza-repo|add-eza-repo.sh"
+)
+
 packages=(
     git
     neovim
@@ -70,6 +75,26 @@ update_dotfiles_repo() {
 is_installed() {
     dpkg -s "$1" &>/dev/null
     return $?
+}
+
+# Run any utilities that need to be ran.
+#
+# This function goes through each of the utilities specified in the utilities array.
+# If the utility has not been ran (i.e., a file at the specified check_path does not
+# exist), it runs the utility with the given command. If the utility has already been
+# ran, it prints a message indicating that it has already ran.
+run_utilities() {
+    for utility in "${utilities[@]}"; do
+        name=$(echo "$utility" | cut -d'|' -f1)
+        check_path=$(echo "$utility" | cut -d'|' -f2)
+        install_command=$(echo "$utility" | cut -d'|' -f3)
+        if [ ! -f "$check_path" ]; then
+            echo -e "${TXT_GRN}Running $name...${RESET}"
+            "$DOTFILES_DIR/utilities/$install_command"
+        else
+            echo -e "${TXT_RED}$name has already ran.${RESET}"
+        fi
+    done
 }
 
 add_ppas() {
@@ -203,6 +228,7 @@ link_files() {
 }
 
 update_dotfiles_repo
+run_utilities
 add_ppas
 install_packages
 install_tools
