@@ -19,6 +19,8 @@ packages=(
     fzf
     ripgrep
     bat
+    unzip
+    build-essential
     eza
 )
 
