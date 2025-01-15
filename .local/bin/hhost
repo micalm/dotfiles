@@ -24,3 +24,15 @@ if [ -z "$HOSTNAME" ]; then
 else
     echo "$DOMAIN => $IP => $HOSTNAME"
 fi
+
+
+# Fetch MX records for the domain
+MX_RECORDS=$(host -t MX $DOMAIN | awk '/is handled by/ { print $6, $7 }')
+
+if [ -z "$MX_RECORDS" ]; then
+    echo "No MX records found for $DOMAIN"
+else
+    while read -r PRIORITY SERVER; do
+        echo "$DOMAIN @> [$PRIORITY] $SERVER"
+    done <<< "$MX_RECORDS"
+fi
