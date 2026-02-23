@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MSG_FILE="${1:-}"
+COMMIT_SOURCE="${2:-}"   # message, template, merge, squash, commit
+
+CZ_BIN="$HOME/.local/bin/cz"
+
+# If cz isn't available, do nothing
+[[ -x "$CZ_BIN" ]] || exit 0
+
+# Don't override explicit -m/-F commits
+[[ "${COMMIT_SOURCE}" == "message" ]] && exit 0
+
+# Optional: don't interfere with merge/squash messages
+[[ "${COMMIT_SOURCE}" == "merge" || "${COMMIT_SOURCE}" == "squash" ]] && exit 0
+
+# Ensure we have a TTY for interactive prompt_toolkit.
+# In hook contexts stdin is often not a terminal; attach to /dev/tty if possible.
+if [[ -t 0 && -t 1 ]]; then
+  "$CZ_BIN" commit --dry-run --write-message-to-file "$MSG_FILE"
+elif [[ -r /dev/tty && -w /dev/tty ]]; then
+  "$CZ_BIN" commit --dry-run --write-message-to-file "$MSG_FILE" \
+    </dev/tty >/dev/tty 2>/dev/tty
+else
+  # No TTY available (GUI/IDE). Don't block commits.
+  # You can enforce conventional commits separately with commit-msg validation if desired.
+  exit 0
+fi

@@ -17,7 +17,7 @@
     template = ~/.gitmessage
 [core]
     editor = vim
-	hooksPath = /home/micalm/.config/git/hooks
+	hooksPath = ~/.config/git/hooks
 [push]
     followTags = true
     default = current

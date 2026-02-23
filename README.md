@@ -64,6 +64,7 @@ A basic setup to maintain user sanity:
 - Default commit message with hints on [Conventional Commits](https://www.conventionalcommits.org/)
 - `git plog` alias for a formatted `git log`
 - A sane default configuration (Remember to change the user settings if using this!)
+- `core.hooksPath` points to `~/.config/git/hooks` (managed by the installer)
 
 ### hhost
 

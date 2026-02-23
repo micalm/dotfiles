@@ -8,7 +8,7 @@ ppas=(
 
 # name|check|utility
 utilities=(
-    "Add eza repository|.add-eza-repo|add-eza-repo.sh"
+    "Add eza repository|$HOME/.add-eza-repo|add-eza-repo.sh"
 )
 
 packages=(
@@ -22,6 +22,7 @@ packages=(
     unzip
     build-essential
     eza
+    pipx
 )
 
 binaries=(
@@ -31,16 +32,20 @@ binaries=(
 # name|path|command
 tools=(
     "Oh My Zsh|$HOME/.oh-my-zsh|sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
-    "zsh-autosuggestions|$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions|git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-    "zsh-syntax-highlighting|$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting|git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     "Node Version Manager|$HOME/.nvm|bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)\""
     "NvChad for NeoVim|$HOME/.config/nvim|git clone https://github.com/NvChad/starter ~/.config/nvim"
+)
+
+zsh_plugins=(
+    "zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions.git|$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    "zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting.git|$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
 )
 
 # name|command
 scripts=(
     "Add GNOME Terminal GitHub-Dark-Dimmed Theme|bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/edurojasr/Gnome-Terminal-GitHub-Theme/main/github-dark-dimmed.sh)\""
-    "Use latest Node LTS|source $HOME/.nvm/nvm.sh && nvm install --lts"
+    "Install or update Commitizen|if pipx list --short 2>/dev/null | grep -qx commitizen; then pipx upgrade commitizen; else pipx install commitizen; fi"
+    "Use latest Node LTS and set default|source $HOME/.nvm/nvm.sh && nvm install --lts && nvm alias default 'lts/*'"
     "Set NeoVim as default editor|sudo update-alternatives --set vim /usr/bin/nvim"
 )
 
@@ -101,8 +106,12 @@ run_utilities() {
 
 add_ppas() {
     for ppa in "${ppas[@]}"; do
-        sudo add-apt-repository -y "ppa:$ppa"
-        echo "PPA $ppa has been added."
+        if grep -Rhsq "^deb .*$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2>/dev/null; then
+            echo -e "${TXT_RED}PPA $ppa is already configured.${RESET}"
+        else
+            sudo add-apt-repository -y "ppa:$ppa"
+            echo "PPA $ppa has been added."
+        fi
     done
 }
 
@@ -191,6 +200,27 @@ install_tools() {
   done
 }
 
+install_zsh_plugins() {
+  local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
+  mkdir -p "$plugins_dir"
+
+  for plugin in "${zsh_plugins[@]}"; do
+    plugin_name=$(echo "$plugin" | cut -d '|' -f 1)
+    repo_url=$(echo "$plugin" | cut -d '|' -f 2)
+    plugin_path=$(echo "$plugin" | cut -d '|' -f 3)
+
+    if [ -d "$plugin_path/.git" ]; then
+      echo -e "${TXT_GRN}Updating $plugin_name...${RESET}"
+      git -C "$plugin_path" pull --ff-only
+    elif [ -d "$plugin_path" ]; then
+      echo -e "${TXT_RED}$plugin_name exists but is not a git repository. Skipping.${RESET}"
+    else
+      echo -e "${TXT_GRN}Installing $plugin_name...${RESET}"
+      git clone "$repo_url" "$plugin_path"
+    fi
+  done
+}
+
 # Install the required scripts.
 #
 # This function goes through the list of required scripts. If a script is not installed,
@@ -227,6 +257,10 @@ link_files() {
         bin_name=$(basename "$bin_file")
         link_file "$bin_file" "$HOME/.local/bin/$bin_name"
     done
+
+    echo "Linking .config/git/hooks directory..."
+    mkdir -p "$HOME/.config/git"
+    link_file "$DOTFILES_DIR/.config/git/hooks" "$HOME/.config/git/hooks"
 }
 
 update_dotfiles_repo
@@ -234,6 +268,7 @@ run_utilities
 add_ppas
 install_packages
 install_tools
+install_zsh_plugins
 download_binaries
 install_scripts
 link_files

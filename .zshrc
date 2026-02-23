@@ -24,11 +24,11 @@ source $ZSH/oh-my-zsh.sh
 
 # PHP/Laravel shortcuts
 alias art="php artisan"
-alias art7="php7.4 artisan"
-alias art8="php8.3 artisan"
+alias art7="php8.4 artisan"
+alias art8="php8.4 artisan"
 alias co="composer"
-alias co7="php7.4 /usr/local/bin/composer"
-alias co8="php8.3 /usr/local/bin/composer"
+alias co7="php8.4 /usr/local/bin/composer"
+alias co8="php8.4 /usr/local/bin/composer"
 alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 
 # Remember if you alias a command you can always call the original with `\cat`
@@ -46,4 +46,3 @@ export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony/b
 # https://github.com/nvm-sh/nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
