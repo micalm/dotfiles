@@ -17,6 +17,7 @@
     template = ~/.gitmessage
 [core]
     editor = vim
+	hooksPath = /home/micalm/.config/git/hooks
 [push]
     followTags = true
     default = current
@@ -24,3 +25,7 @@
     plog = log --graph --pretty=format:'%C(bold blue)%h%Creset - %C(yellow)%d%Creset %s %C(cyan dim)(%cr)%Creset %n' --abbrev-commit --branches
 [init]
 	defaultBranch = main
+[credential]
+	helper = store
+[pull]
+	rebase = false
