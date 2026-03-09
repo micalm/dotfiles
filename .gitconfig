@@ -8,24 +8,24 @@
 [color "status"]
     added = green
     changed = blue
-    untracked = red 
+    untracked = red
 [color "diff"]
     meta = yellow
-    old = red 
+    old = red
     new = green
 [commit]
     template = ~/.gitmessage
 [core]
     editor = vim
-	hooksPath = ~/.config/git/hooks
+    hooksPath = ~/.config/git/hooks
 [push]
     followTags = true
     default = current
 [alias]
     plog = log --graph --pretty=format:'%C(bold blue)%h%Creset - %C(yellow)%d%Creset %s %C(cyan dim)(%cr)%Creset %n' --abbrev-commit --branches
 [init]
-	defaultBranch = main
+    defaultBranch = main
 [credential]
-	helper = store
+    helper = store
 [pull]
-	rebase = false
+    rebase = false

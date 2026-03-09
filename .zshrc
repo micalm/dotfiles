@@ -27,7 +27,7 @@ alias art="php artisan"
 alias art7="php8.4 artisan"
 alias art8="php8.4 artisan"
 alias co="composer"
-alias co7="php8.4 /usr/local/bin/composer"
+alias co7="php7.4 /usr/local/bin/composer"
 alias co8="php8.4 /usr/local/bin/composer"
 alias sail='[ -f sail ] && zsh sail || zsh ./vendor/bin/sail'
 
@@ -41,7 +41,7 @@ alias host="hhost"
 
 # Set up console env
 export EDITOR=vim
-export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony5/bin:$PATH"
 
 # https://github.com/nvm-sh/nvm
 export NVM_DIR="$HOME/.nvm"
