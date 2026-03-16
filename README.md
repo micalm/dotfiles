@@ -26,14 +26,13 @@ Feel free to share and modify them. If you base your work on these files, a ment
 
 ### .zshrc
 
-A set of helpers for ohmyz.sh-based zsh configurations. Some web development helpers are included:
+A set of helpers for oh-my-zsh-based zsh configurations. Some web development helpers are included:
 
 - **Theme**: [bureau](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes#bureau) - supports git and nvm.
 - **Aliases**:
   - `cat` aliased to [bat](https://github.com/sharkdp/bat)
-  - `l(s)` aliased to [exa](https://github.com/eza-community/eza)
+  - `l` aliased to [eza](https://github.com/eza-community/eza)
   - `host` wrapper for quick domain-to-IP and reverse DNS lookups
-  - `flush-dns` alias for systemd
   - `vim` set as the default editor
 
 ### .vimrc
