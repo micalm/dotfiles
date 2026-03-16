@@ -261,6 +261,10 @@ link_files() {
     echo "Linking .config/git/hooks directory..."
     mkdir -p "$HOME/.config/git"
     link_file "$DOTFILES_DIR/.config/git/hooks" "$HOME/.config/git/hooks"
+
+    echo "Linking .config/zsh files..."
+    mkdir -p "$HOME/.config/zsh"
+    link_file "$DOTFILES_DIR/.config/zsh/command-timer.zsh" "$HOME/.config/zsh/command-timer.zsh"
 }
 
 update_dotfiles_repo

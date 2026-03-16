@@ -29,6 +29,7 @@ Feel free to share and modify them. If you base your work on these files, a ment
 A set of helpers for oh-my-zsh-based zsh configurations. Some web development helpers are included:
 
 - **Theme**: [bureau](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes#bureau) - supports git and nvm.
+- **Prompt extras**: includes a lightweight command runtime segment in the right prompt, shown as `[9s]` or `[1m9s]` without overwriting git status.
 - **Aliases**:
   - `cat` aliased to [bat](https://github.com/sharkdp/bat)
   - `l` aliased to [eza](https://github.com/eza-community/eza)

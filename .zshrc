@@ -22,6 +22,8 @@ zbell_ignore=(vim ssh tail)
 
 source $ZSH/oh-my-zsh.sh
 
+source "$HOME/.config/zsh/command-timer.zsh"
+
 # PHP/Laravel shortcuts
 alias art="php artisan"
 alias art7="php8.4 artisan"
@@ -46,3 +48,9 @@ export PATH="$HOME/.local/bin:$HOME/.config/composer/vendor/bin:$HOME/.symfony5/
 # https://github.com/nvm-sh/nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+autoload -U add-zsh-hook
+add-zsh-hook preexec command_timer_preexec
+add-zsh-hook precmd command_timer_precmd
+
+RPROMPT='$(nvm_prompt_info) $(bureau_git_prompt)$(command_timer_prompt)'
